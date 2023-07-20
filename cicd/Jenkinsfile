@@ -18,11 +18,18 @@ pipeline {
                 sh "mvn clean install -DskipTests"
             }
         }
-        stage('build Image') {
+        stage('Build Docker Image') {
                     steps {
-                        // Run Maven on a Unix agent.
-                        sh "cd cicd"
-                        sh "docker build - k8s_demo ."
+                        script {
+                            docker.build("k8s_demo:latest", "./cicd/Dockerfile")
+                        }
+                    }
+                }
+                stage('Save Docker Image as Tarball') {
+                    steps {
+                        script {
+                            docker.save "k8s_demo:latest", "./cicd/k8s_demo.tar"
+                        }
                     }
                 }
     }
