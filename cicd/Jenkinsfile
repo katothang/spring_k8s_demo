@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
+
+    stages {
+        stage('Clone git') {
+            steps {
+                // Get some code from a GitHub repository
+                git branch: 'main', credentialsId: 'git_cer', url: 'https://github.com/katothang/spring_k8s_demo.git'
+            }
+        }
+        stage('build project') {
+            steps {
+                // Run Maven on a Unix agent.
+                sh "mvn clean install -DskipTests"
+            }
+        }
+    }
+}
