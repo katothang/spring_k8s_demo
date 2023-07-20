@@ -18,5 +18,12 @@ pipeline {
                 sh "mvn clean install -DskipTests"
             }
         }
+        stage('build Image') {
+                    steps {
+                        // Run Maven on a Unix agent.
+                        sh "cd cicd"
+                        sh "docker build - k8s_demo ."
+                    }
+                }
     }
 }
