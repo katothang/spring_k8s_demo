@@ -21,14 +21,14 @@ pipeline {
         stage('Build Docker Image') {
                     steps {
                         script {
-                            docker.build("k8s_demo:latest", "./cicd/Dockerfile")
+                            docker.build("k8s_demo:latest", "/cicd/Dockerfile")
                         }
                     }
                 }
-                stage('Save Docker Image as Tarball') {
+                stage('Save Docker Image') {
                     steps {
                         script {
-                            docker.save "k8s_demo:latest", "./cicd/k8s_demo.tar"
+                            docker.save "k8s_demo:latest", "/cicd/k8s_demo.tar"
                         }
                     }
                 }
