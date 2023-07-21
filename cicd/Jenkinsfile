@@ -38,6 +38,7 @@ pipeline {
                         sh "docker ps"
                         script {
                             sh "cd cicd"
+                            sh "ls"
                             sh "docker build -t docker_k8s ."
                         }
                     }
