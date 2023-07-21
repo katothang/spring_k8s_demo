@@ -37,9 +37,13 @@ pipeline {
                     steps {
                         sh "docker ps"
                         script {
-                            sh "cd cicd"
+                            echo "print all file current folder"
                             sh "ls"
-                            sh "docker build -t docker_k8s ."
+                            // Thay đổi thư mục vào thư mục "cicd"
+                            dir('cicd') {
+                            // Thực hiện lệnh docker build trong thư mục "cicd"
+                              sh "docker build -t docker_k8s ."
+                            }
                         }
                     }
                 }
