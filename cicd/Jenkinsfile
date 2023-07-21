@@ -39,6 +39,7 @@ pipeline {
                         script {
                             echo "print all file current folder"
                             sh "ls"
+                            sh "cp target/demo-0.0.1-SNAPSHOT.jar cicd/app.jar"
                             // Thay đổi thư mục vào thư mục "cicd"
                             dir('cicd') {
                             // Thực hiện lệnh docker build trong thư mục "cicd"
