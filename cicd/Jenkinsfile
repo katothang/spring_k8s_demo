@@ -18,19 +18,36 @@ pipeline {
                 sh "mvn clean install -DskipTests"
             }
         }
+        stage('Delete old docker') {
+                            steps {
+                                script {
+                                  // Kiểm tra xem Docker image có tồn tại hay không
+                                  def imageExists = sh script: "docker image inspect docker_k8s", returnStatus: true
+                                  if (imageExists == 0) {
+                                   // Nếu image tồn tại, xóa nó trước khi lưu
+                                      sh "docker rmi docker_k8s"
+                                     }
+
+
+                               }
+                            }
+                        }
         stage('Build Docker Image') {
+
                     steps {
                         sh "docker ps"
                         script {
-                            docker.build("k8s_demo:latest", "/cicd/Dockerfile")
+                            sh "cd cicd"
+                            sh "docker build -t docker_k8s ."
                         }
                     }
                 }
                 stage('Save Docker Image') {
                     steps {
                         script {
-                            docker.save "k8s_demo:latest", "/cicd/k8s_demo.tar"
-                        }
+                           // Lưu Docker image thành file tar
+                           sh "docker save -o docker_k8s.tar docker_k8s"
+                       }
                     }
                 }
     }
