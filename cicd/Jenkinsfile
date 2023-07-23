@@ -22,7 +22,7 @@ pipeline {
                             steps {
                                 script {
                                   // Kiểm tra xem Docker image có tồn tại hay không
-                                  def imageExists = sh script: "docker image inspect docker_k8s", returnStatus: true
+                                  def imageExists = sh script: "docker image inspect springk8s", returnStatus: true
                                   if (imageExists == 0) {
                                    // Nếu image tồn tại, xóa nó trước khi lưu
                                       sh "docker rmi springk8s"
