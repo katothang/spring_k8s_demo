@@ -44,6 +44,7 @@ pipeline {
                             dir('cicd') {
                             // Thực hiện lệnh docker build trong thư mục "cicd"
                               sh "docker build -t docker_k8s ."
+
                             }
                         }
                     }
@@ -56,5 +57,16 @@ pipeline {
                        }
                     }
                 }
+
+                stage('Deploy k8s') {
+                                    steps {
+                                        script {
+                                           dir('cicd') {
+                                            sh "kubectl apply -f deployment.yaml"
+
+                                           }
+                                       }
+                                    }
+                                }
     }
 }
