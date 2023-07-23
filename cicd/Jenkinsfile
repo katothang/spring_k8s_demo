@@ -25,7 +25,7 @@ pipeline {
                                   def imageExists = sh script: "docker image inspect docker_k8s", returnStatus: true
                                   if (imageExists == 0) {
                                    // Nếu image tồn tại, xóa nó trước khi lưu
-                                      sh "docker rmi docker_k8s"
+                                      sh "docker rmi springk8s"
                                      }
 
 
@@ -43,7 +43,7 @@ pipeline {
                             // Thay đổi thư mục vào thư mục "cicd"
                             dir('cicd') {
                             // Thực hiện lệnh docker build trong thư mục "cicd"
-                              sh "docker build -t docker_k8s ."
+                              sh "docker build -t springk8s ."
 
                             }
                         }
@@ -53,7 +53,7 @@ pipeline {
                     steps {
                         script {
                            // Lưu Docker image thành file tar
-                           sh "docker save -o docker_k8s.tar docker_k8s"
+                           sh "docker save -o springk8s.tar springk8s"
                        }
                     }
                 }
