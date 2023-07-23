@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment # Kubernetes resource kind we are creating
 metadata:
-  name: docker_k8s
+  name: springk8s
 spec:
   selector:
     matchLabels:
       app: springk8s
-  replicas: 2 # Number of replicas that will be created for this deployment
+  replicas: 1 # Number of replicas that will be created for this deployment
   template:
     metadata:
       labels:
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: springk8s
-          image: springk8s # Image that will be used to containers in the cluster
-          imagePullPolicy: Never
+          image: localhost:5000/springk8s # Image that will be used to containers in the cluster
+
           ports:
             - containerPort: 1234 # The port that the container is running on in the cluster
