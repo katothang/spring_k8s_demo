@@ -58,17 +58,14 @@ pipeline {
                         sh "kubectl apply -f deployment.yaml"
                     }
                 }
-            }
-            stage('Forward port cluster to local') {
-                steps {
-                    script {
-                        def port = 1234
-                        def isPortAvailable = checkPortAvailability(port)
-                        if (isPortAvailable) {
-                            sh "kubectl port-forward service/springboot-k8s-service ${port}:${port}"
-                        } else {
-                            echo "Port ${port} is already in use."
-                        }
+                // Forward port cluster to local
+                script {
+                    def port = 1234
+                    def isPortAvailable = checkPortAvailability(port)
+                    if (isPortAvailable) {
+                        sh "kubectl port-forward service/springboot-k8s-service ${port}:${port}"
+                    } else {
+                        echo "Port ${port} is already in use."
                     }
                 }
             }
