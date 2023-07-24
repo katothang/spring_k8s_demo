@@ -27,11 +27,6 @@ spec:
             httpGet:
               path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sống tại đây
               port: 1234
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
 
 ---
 apiVersion: v1

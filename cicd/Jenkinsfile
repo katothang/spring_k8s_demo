@@ -56,6 +56,7 @@ pipeline {
                         sh "pwd"
                         sh "kubectl cluster-info"
                         sh "kubectl apply -f deployment.yaml"
+                        sh "kubectl rollout restart deployment"
                     }
                 }
                 // Forward port cluster to local

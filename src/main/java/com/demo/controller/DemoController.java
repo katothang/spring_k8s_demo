@@ -14,6 +14,6 @@ public class DemoController {
     @GetMapping("")
     public String getInfo() throws UnknownHostException {
         String ip = InetAddress.getLocalHost().getHostAddress();
-        return "Demo k8s cluster with 3 nodes runing with ip = "+ip;
+        return "v2 Demo k8s cluster with 3 nodes runing with ip = "+ip;
     }
 }
