@@ -1,12 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment # Kubernetes resource kind we are creating
+kind: Deployment
 metadata:
   name: springk8s
 spec:
   selector:
     matchLabels:
       app: springk8s
-  replicas: 3 # Number of replicas that will be created for this deployment
+  replicas: 3
   template:
     metadata:
       labels:
@@ -14,7 +14,19 @@ spec:
     spec:
       containers:
         - name: springk8s
-          image: hub.thangnotes.net/springk8s # Image that will be used to containers in the cluster
-
+          image: hub.thangnotes.net/springk8s
           ports:
-            - containerPort: 1234 # The port that the container is running on in the cluster
+            - containerPort: 1234
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springk8s-LoadBalancer
+spec:
+  selector:
+    app: springk8s
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 1234
+      targetPort: 1234
