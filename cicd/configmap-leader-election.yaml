@@ -4,6 +4,6 @@ metadata:
   name: leader-election-config
 data:
   leader-elect: "true"
-  lease-duration: "15s"
-  renew-deadline: "10s"
+  lease-duration: "150s"
+  renew-deadline: "100s"
   retry-period: "2s"
