@@ -1,94 +1,79 @@
 pipeline {
-  agent any
+    agent any
 
-  tools {
-    // Install the Maven version configured as "M3" and add it to the path.
-    maven "M3"
-  }
-
-  stages {
-    stage('checkout project') {
-      steps {
-        checkout scm
-      }
+    tools {
+        maven "M3"
     }
-    stage('build project') {
-      steps {
-        // Run Maven on a Unix agent.
-        sh "mvn clean install -DskipTests"
-      }
-    }
-    stage('Delete old docker') {
-      steps {
-        script {
-          // Kiểm tra xem Docker image có tồn tại hay không
-          def imageExists = sh script: "docker image inspect springk8s", returnStatus: true
-          if (imageExists == 0) {
-            // Nếu image tồn tại, xóa nó trước khi lưu
-            sh "docker rmi springk8s"
-          }
 
+    stages {
+        stage('checkout project') {
+            steps {
+                checkout scm
+            }
         }
-      }
-    }
-    stage('Build Docker Image') {
-
-      steps {
-        sh "docker ps"
-        script {
-          echo "print all file current folder"
-          sh "ls"
-          sh "cp target/demo-0.0.1-SNAPSHOT.jar cicd/app.jar"
-          // Thay đổi thư mục vào thư mục "cicd"
-          dir('cicd') {
-            // Thực hiện lệnh docker build trong thư mục "cicd"
-            sh "docker build -t hub.thangnotes.net/springk8s ."
-
-          }
+        stage('build project') {
+            steps {
+                sh "mvn clean install -DskipTests"
+            }
         }
-      }
-    }
-    stage('Push Docker repo local') {
-      steps {
-        script {
-          // Lưu Docker image thành file tar
-          sh "docker push hub.thangnotes.net/springk8s"
+        stage('Delete old docker') {
+            steps {
+                script {
+                    def imageExists = sh script: "docker image inspect springk8s", returnStatus: true
+                    if (imageExists == 0) {
+                        sh "docker rmi springk8s"
+                    }
+                }
+            }
         }
-      }
-    }
-
-    stage('Deploy k8s') {
-      environment {
-        KUBECONFIG = '/var/jenkins_home/config'
-      }
-      steps {
-
-        script {
-          dir('cicd') {
-            sh "pwd"
-            sh "kubectl cluster-info"
-            sh "kubectl apply -f deployment.yaml"
-          }
+        stage('Build Docker Image') {
+            steps {
+                sh "docker ps"
+                script {
+                    echo "print all file current folder"
+                    sh "ls"
+                    sh "cp target/demo-0.0.1-SNAPSHOT.jar cicd/app.jar"
+                    dir('cicd') {
+                        sh "docker build -t hub.thangnotes.net/springk8s ."
+                    }
+                }
+            }
         }
-      }
+        stage('Push Docker repo local') {
+            steps {
+                script {
+                    sh "docker push hub.thangnotes.net/springk8s"
+                }
+            }
+        }
+        stage('Deploy k8s') {
+            environment {
+                KUBECONFIG = '/var/jenkins_home/config'
+            }
+            steps {
+                script {
+                    dir('cicd') {
+                        sh "pwd"
+                        sh "kubectl cluster-info"
+                        sh "kubectl apply -f deployment.yaml"
+                    }
+                }
+            }
+            stage('Forward port cluster to local') {
+                steps {
+                    script {
+                        def port = 1234
+                        def isPortAvailable = checkPortAvailability(port)
+                        if (isPortAvailable) {
+                            sh "kubectl port-forward service/springboot-k8s-service ${port}:${port}"
+                        } else {
+                            echo "Port ${port} is already in use."
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
-
-  stages {
-          stage('Forward port cluster to local') {
-              steps {
-                  script {
-                      def port = 1234
-                      def isPortAvailable = checkPortAvailability(port)
-                      if (isPortAvailable) {
-                          sh "kubectl port-forward service/springboot-k8s-service ${port}:${port}"
-                      } else {
-                          echo "Port ${port} is already in use."
-                      }
-                  }
-              }
-          }
-      }
 }
 
 def checkPortAvailability(port) {
