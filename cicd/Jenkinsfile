@@ -63,7 +63,7 @@ pipeline {
                     def port = 1234
                     def isPortAvailable = checkPortAvailability(port)
                     if (isPortAvailable) {
-                        sh "kubectl port-forward service/springboot-k8s-service ${port}:${port}"
+                        sh "nohup kubectl port-forward service/springk8s-loadbalancer ${port}:${port} > /dev/null 2>&1 &"
                     } else {
                         echo "Port ${port} is already in use."
                     }
