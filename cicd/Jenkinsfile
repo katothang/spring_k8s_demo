@@ -62,7 +62,9 @@ pipeline {
                                     steps {
                                         script {
                                            dir('cicd') {
+                                            sh "pwd"
                                             sh "export KUBECONFIG=/var/jenkins_home/config"
+                                            sh "kubectl cluster-info"
                                             sh "kubectl apply -f deployment.yaml"
 
                                            }
