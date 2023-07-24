@@ -74,13 +74,7 @@ pipeline {
 }
 
 def checkPortAvailability(port) {
-    def socket = new ServerSocket()
-    try {
-        socket.bind(new InetSocketAddress('localhost', port))
-        return true
-    } catch (Exception e) {
-        return false
-    } finally {
-        socket.close()
-    }
+    def proc = "ss -tuln | grep ${port}".execute()
+    def output = proc.text
+    return output.isEmpty()
 }
