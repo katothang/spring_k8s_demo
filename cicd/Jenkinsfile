@@ -53,7 +53,7 @@ pipeline {
                     steps {
                         script {
                            // Lưu Docker image thành file tar
-                           sh "docker push 192.168.2.76:5000/springk8s"
+                           sh "docker push --insecure-registry 192.168.2.76:5000/springk8s"
                        }
                     }
                 }
