@@ -58,18 +58,19 @@ pipeline {
                     }
                 }
 
-                stage('Deploy k8s') {
-                                    steps {
-                                        script {
-                                           dir('cicd') {
-                                            sh "pwd"
-                                            sh "export KUBECONFIG=/var/jenkins_home/config"
-                                            sh "kubectl cluster-info"
-                                            sh "kubectl apply -f deployment.yaml"
-
-                                           }
-                                       }
-                                    }
-                                }
+             stage('Deploy k8s') {
+                 steps {
+                     environment {
+                         KUBECONFIG = '/var/jenkins_home/config'
+                     }
+                     script {
+                         dir('cicd') {
+                             sh "pwd"
+                             sh "kubectl cluster-info"
+                             sh "kubectl apply -f deployment.yaml"
+                         }
+                     }
+                 }
+             }
     }
 }
