@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController {
     @GetMapping("")
     public String getInfo() {
-        return "Hello k8s demo";
+        return "Chúng ta của quá khứ";
     }
 }
