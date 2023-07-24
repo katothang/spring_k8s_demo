@@ -63,9 +63,8 @@ pipeline {
                     def port = 1234
                     def isPortAvailable = checkPortAvailability(port)
                     if (isPortAvailable) {
-                        def command = "kubectl port-forward service/springk8s-loadbalancer ${port}:${port}"
-                        def proc = command.execute()
-                        proc.waitForKill()
+                        def command = "kubectl port-forward service/springk8s-loadbalancer ${port}:${port} &"
+                        sh command
                     } else {
                         echo "Port ${port} is already in use."
                     }
