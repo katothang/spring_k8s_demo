@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: springk8s
-          image: hub.thangnotes.net/springk8s
+          image: hub.thangnotes.net/springk8s:latest
           ports:
             - containerPort: 1234
 ---
