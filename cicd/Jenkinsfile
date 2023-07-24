@@ -43,7 +43,7 @@ pipeline {
                             // Thay đổi thư mục vào thư mục "cicd"
                             dir('cicd') {
                             // Thực hiện lệnh docker build trong thư mục "cicd"
-                              sh "docker build -t localhost:5000/springk8s ."
+                              sh "docker build -t http://192.168.2.76:5000/springk8s ."
 
                             }
                         }
@@ -53,7 +53,7 @@ pipeline {
                     steps {
                         script {
                            // Lưu Docker image thành file tar
-                           sh "docker push localhost:5000/springk8s"
+                           sh "docker push http://192.168.2.76:5000/springk8s"
                        }
                     }
                 }
