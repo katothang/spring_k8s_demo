@@ -34,7 +34,7 @@ pipeline {
                     sh "ls"
                     sh "cp target/demo-0.0.1-SNAPSHOT.jar cicd/app.jar"
                     dir('cicd') {
-                        sh "docker build -t hub.thangnotes.net/springk8s-leader-election Dockerfile-leader-election"
+                        sh "docker build -t hub.thangnotes.net/springk8s-leader-election -f Dockerfile-leader-election ."
                     }
                 }
             }
