@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: springk8s
+  annotations:
+    kubectl.kubernetes.io/change-cause: "Automatic redeployment triggered by Jenkins" # Thêm annotation để ghi chú lý do triển khai
 spec:
   selector:
     matchLabels:
@@ -25,6 +27,7 @@ spec:
             httpGet:
               path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sống tại đây
               port: 1234
+
 
 ---
 apiVersion: v1
