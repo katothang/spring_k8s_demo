@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: springk8s-leader-election
-          image: localhost:5000/springk8s-leader-election
+          image: hub.thangnotes.net:5000/springk8s-leader-election
           ports:
             - containerPort: 1235
         - name: leader-elector
