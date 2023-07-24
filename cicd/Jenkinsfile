@@ -59,10 +59,11 @@ pipeline {
                 }
 
              stage('Deploy k8s') {
+             environment {
+                                      KUBECONFIG = '/var/jenkins_home/config'
+                                  }
                  steps {
-                     environment {
-                         KUBECONFIG = '/var/jenkins_home/config'
-                     }
+
                      script {
                          dir('cicd') {
                              sh "pwd"
