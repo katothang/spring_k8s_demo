@@ -52,15 +52,15 @@ public class LeaderAspect extends LeaderSelectorListenerAdapter implements Close
         revokeLeadership();
     }
 
-    @Around("@annotation(com.lwmuk.spring.boot.leader.annotation.LeaderOnly)")
+    @Around("@annotation(com.demo.annotation.LeaderOnly)")
     public void onlyExecuteForLeader(ProceedingJoinPoint joinPoint) {
         if (!isLeader) {
-            log.debug("I'm not leader, skip leader-only tasks.");
+            log.info("I'm not leader, skip leader-only tasks.");
             return;
         }
 
         try {
-            log.debug("I'm leader, execute leader-only tasks.");
+            log.info("I'm leader, execute leader-only tasks.");
             joinPoint.proceed();
         } catch (Throwable ex) {
             log.error(ex.getMessage());

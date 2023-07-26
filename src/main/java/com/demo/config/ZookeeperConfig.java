@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class ZookeeperConfig {
     @Bean
     public CuratorFramework curatorFramework() {
-        CuratorFramework client = CuratorFrameworkFactory.newClient("54.168.244.189:2181", new ExponentialBackoffRetry(1000, 3));
+        CuratorFramework client = CuratorFrameworkFactory.newClient("54.168.244.189:2181,13.230.230.230:2181,54.168.244.189:2181", new ExponentialBackoffRetry(1000, 3));
         client.start();
         return client;
     }
