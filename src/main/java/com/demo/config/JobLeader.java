@@ -66,7 +66,7 @@ public abstract class JobLeader {
             @Override
             public void isLeader() {
                 System.out.println("Leader");
-                jobLogic();
+                //jobLogic();
             }
 
             @Override

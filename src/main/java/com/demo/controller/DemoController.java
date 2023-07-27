@@ -32,7 +32,7 @@ public class DemoController {
     public String excute() throws Exception {
         jobCoutDown.setTypeServeEnum(TypeServeEnum.ZOOKEEPER);
         jobCoutDown.start();
-        return jobCoutDown.isRuning() ?  "Job is Running instance "+ jobCoutDown.getInstanceLeader() : "Job start excute..";
+        return jobCoutDown.isLeader() ?  "Job is Running instance "+ jobCoutDown.getInstanceLeader() : "Job start excute..";
     }
 
 
