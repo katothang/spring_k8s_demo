@@ -2,6 +2,7 @@ package com.demo.controller;
 
 
 import com.demo.job.HelloWorld;
+import com.demo.job.JobCoutDown;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -18,7 +19,7 @@ import java.net.UnknownHostException;
 @RequestMapping("")
 public class DemoController {
     @Autowired
-    HelloWorld helloWorld;
+    JobCoutDown jobCoutDown;
     @GetMapping("")
     public String getInfo() throws UnknownHostException {
         String ip = InetAddress.getLocalHost().getHostAddress();
@@ -26,9 +27,9 @@ public class DemoController {
     }
 
     @GetMapping("excute")
-    @Async
+
     public String excute()  {
-        helloWorld.sayHello();
+        jobCoutDown.start();
         return "Job excute";
     }
 

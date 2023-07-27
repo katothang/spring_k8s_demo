@@ -1,20 +1,15 @@
 package com.demo.job;
 
-import com.demo.annotation.LeaderOnly;
+import com.demo.config.JobLeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HelloWorld {
-
-    private static final Logger log = LoggerFactory.getLogger(HelloWorld.class);
-
-    //@LeaderOnly
-    //@Async
-    public void sayHello() {
+public class JobCoutDown extends JobLeader {
+    private static final Logger log = LoggerFactory.getLogger(JobCoutDown.class);
+    @Override
+    public void myLeaderOnlyTask() {
         int seconds = 120;
 
         for (int i = seconds; i >= 0; i--) {
@@ -25,6 +20,5 @@ public class HelloWorld {
                 e.printStackTrace();
             }
         }
-
     }
 }
