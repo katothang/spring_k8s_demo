@@ -11,11 +11,11 @@ public class HelloWorld {
 
     private static final Logger log = LoggerFactory.getLogger(HelloWorld.class);
 
-    @Scheduled(fixedRate = 5000L)
+    @Scheduled(fixedRate = 50000L)
     @LeaderOnly
     public void sayHello() {
 
-        int seconds = 120;
+        int seconds = 20;
 
         for (int i = seconds; i >= 0; i--) {
             System.out.println(i);
