@@ -4,14 +4,19 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class ZookeeperConfig {
-    @Bean
+    @Value("${zookeeper.server}")
+    private String zookeeperServer;
+    @Bean(name = "curatorZookeeperFramework")
+    @Primary
     public CuratorFramework curatorFramework() {
-        CuratorFramework client = CuratorFrameworkFactory.newClient("54.168.244.189:2181,13.230.230.230:2181,54.168.244.189:2181", new ExponentialBackoffRetry(1000, 3));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(zookeeperServer, new ExponentialBackoffRetry(1000, 3));
         client.start();
         return client;
     }
