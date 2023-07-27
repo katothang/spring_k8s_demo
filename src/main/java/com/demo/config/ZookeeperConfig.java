@@ -21,8 +21,4 @@ public class ZookeeperConfig {
         return client;
     }
 
-    @Bean
-    public LeaderSelector leaderSelector(CuratorFramework curatorFramework) {
-        return new LeaderSelector(curatorFramework, "/leader", new JobLeader());
-    }
 }

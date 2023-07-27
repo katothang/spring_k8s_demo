@@ -5,6 +5,8 @@ import com.demo.enums.TypeServeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
+import java.net.InetAddress;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 @Component
-public class JobLeader extends LeaderSelectorListenerAdapter implements Closeable {
+public abstract class JobLeader {
 
     @Getter
     boolean isLeader = false;
@@ -27,8 +31,7 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
 
     @Getter
     private boolean isRuning = false;
-    @Autowired
-    private LeaderSelector selector;
+
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     @Autowired
@@ -41,67 +44,62 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
     @Autowired
     @Qualifier("curatorEtchFramework")
     CuratorFramework clientEtch;
+    private LeaderLatch leaderLatch;
 
 
-    public void start() {
+    public void start() throws Exception {
         CuratorFramework curatorFramework = null;
         switch (typeServeEnum) {
             case ZOOKEEPER: curatorFramework = clientZookeper; break;
             case ETCH: curatorFramework = clientEtch; break;
             default: curatorFramework = clientZookeper; break;
         }
-        selector = new LeaderSelector(curatorFramework, "/leader", this);
-        selector.autoRequeue();
-        selector.start();
-        try {
-            System.out.println(selector.getLeader().getId());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if(!curatorFramework.isStarted()) {
+            curatorFramework.start();
         }
 
+        String leaderPath = "/locks/leader";
 
-    }
+        leaderLatch = new LeaderLatch(curatorFramework, leaderPath, String.format("ip_%s_key_%s", InetAddress.getLocalHost().getHostAddress(), UUID.randomUUID().toString()));
+        leaderLatch.start();
+        leaderLatch.addListener(new LeaderLatchListener() {
+            @Override
+            public void isLeader() {
+                System.out.println("Leader");
+                jobLogic();
+            }
 
-
-    @Override
-    public void takeLeadership(CuratorFramework cf) {
-        isLeader = true;
-        leaderOnlyAspect.setLeader(true); // Cập nhật trạng thái leader trong Aspect
-        myLeaderOnlyTask();
-        System.out.println("I'm leader, execute leader-only tasks.");
-        if(!isRuning) {
-            myLeaderOnlyTask(); // Gọi công việc leader-only ở đây
-        } else {
-            System.out.println("Job is runing...");
-        }
-        isRuning = false;
-        relinquishLeadership();
+            @Override
+            public void notLeader() {
+                System.out.println("Not Leader");
+            }
+        });
     }
 
     private void relinquishLeadership() {
         isLeader = false;
         leaderOnlyAspect.setLeader(false); // Cập nhật trạng thái leader trong Aspect
-        selector.interruptLeadership(); // Chuyển giao quyền leader cho instance khác
-    }
-
-     public void myLeaderOnlyTask() {
 
     }
 
+    public boolean isLeader() {
+        return leaderLatch.hasLeadership();
+    }
+     public abstract void  jobLogic();
     public String getInstanceLeader() {
         try {
-            return selector.getLeader().getId();
+            return leaderLatch.getLeader().getId();
         } catch (Exception e) {
             return "";
         }
     }
 
-    @Override
-    public void close() {
-        isLeader = false;
-        leaderOnlyAspect.setLeader(false); // Cập nhật trạng thái leader trong Aspect khi đóng
-        selector.close();
-        executorService.shutdownNow();
-        isRuning = false;
-    }
+//    @Override
+//    public void close() {
+//        isLeader = false;
+//        leaderOnlyAspect.setLeader(false); // Cập nhật trạng thái leader trong Aspect khi đóng
+//        selector.close();
+//        executorService.shutdownNow();
+//        isRuning = false;
+//    }
 }

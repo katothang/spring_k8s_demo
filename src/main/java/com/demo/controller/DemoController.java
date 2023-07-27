@@ -29,8 +29,8 @@ public class DemoController {
 
     @GetMapping("excute")
 
-    public String excute()  {
-        jobCoutDown.setTypeServeEnum(TypeServeEnum.ETCH);
+    public String excute() throws Exception {
+        jobCoutDown.setTypeServeEnum(TypeServeEnum.ZOOKEEPER);
         jobCoutDown.start();
         return jobCoutDown.isRuning() ?  "Job is Running instance "+ jobCoutDown.getInstanceLeader() : "Job start excute..";
     }
