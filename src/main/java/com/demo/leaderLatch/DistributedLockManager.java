@@ -15,12 +15,26 @@ import java.util.UUID;
 
 @Component
 public class DistributedLockManager implements ApplicationRunner, Closeable {
-
     @Value("${zookeeper.host}")
     private String zookeeperHost;
 
     private CuratorFramework curatorFramework;
     private LeaderLatch leaderLatch;
+    private String leaderIP;
+    public String getLeaderIP() {
+        return leaderIP;
+    }
+    public LeaderLatch getLeaderLatch() {
+        return leaderLatch;
+    }
+
+    public void setLeaderLatch(LeaderLatch leaderLatch) {
+        this.leaderLatch = leaderLatch;
+    }
+
+    public void setLeaderIP(String leaderIP) {
+        this.leaderIP = leaderIP;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -29,15 +43,23 @@ public class DistributedLockManager implements ApplicationRunner, Closeable {
 
         String leaderPath = "/locks/leader";
         leaderLatch = new LeaderLatch(curatorFramework, leaderPath, UUID.randomUUID().toString());
+        String leaderId = leaderLatch.getLeader().getId();
+        this.setLeaderIP(leaderId);
+        this.setLeaderLatch(leaderLatch);
         leaderLatch.start();
 
         // Add a listener to handle leadership change events
-        leaderLatch.addListener(new LeaderLatchEvent());
+        leaderLatch.addListener(new LeaderLatchEvent(this));
     }
 
     public boolean isLeader() {
-        return leaderLatch.hasLeadership();
+        try {
+            return leaderLatch.hasLeadership();
+        }catch (Exception e){
+            return false;
+        }
     }
+
 
     @PreDestroy
     @Override
