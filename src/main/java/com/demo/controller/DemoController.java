@@ -30,7 +30,7 @@ public class DemoController {
 
     public String excute()  {
         jobCoutDown.start();
-        return "Job excute";
+        return jobCoutDown.isRuning ?  "Job is Running" : "Job start excute..";
     }
 
 

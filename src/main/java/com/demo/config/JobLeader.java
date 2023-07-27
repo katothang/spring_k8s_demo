@@ -15,6 +15,8 @@ import java.util.concurrent.ScheduledExecutorService;
 public class JobLeader extends LeaderSelectorListenerAdapter implements Closeable {
 
     private volatile boolean isLeader = false;
+
+    public static  boolean isRuning = false;
     @Autowired
     private LeaderSelector selector;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -31,6 +33,8 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
         selector.autoRequeue();
         selector.start();
     }
+
+
     @Override
     public void takeLeadership(CuratorFramework cf) {
         isLeader = true;
@@ -39,7 +43,15 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
         // Thực thi công việc leader-only trong một luồng riêng biệt
         executorService.submit(() -> {
             System.out.println("I'm leader, execute leader-only tasks.");
-            myLeaderOnlyTask(); // Gọi công việc leader-only ở đây
+            if(!isRuning) {
+                isRuning = true;
+                myLeaderOnlyTask(); // Gọi công việc leader-only ở đây
+                isRuning = false;
+
+            } else {
+                System.out.println("Job is runing...");
+            }
+
             relinquishLeadership();
         });
     }

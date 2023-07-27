@@ -10,6 +10,7 @@ public class JobCoutDown extends JobLeader {
     private static final Logger log = LoggerFactory.getLogger(JobCoutDown.class);
     @Override
     public void myLeaderOnlyTask() {
+
         int seconds = 120;
 
         for (int i = seconds; i >= 0; i--) {
