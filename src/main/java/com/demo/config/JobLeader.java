@@ -1,6 +1,7 @@
 package com.demo.config;
 
 import com.demo.aspect.LeaderOnlyAspect;
+import lombok.Getter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
@@ -14,9 +15,11 @@ import java.util.concurrent.ScheduledExecutorService;
 @Component
 public class JobLeader extends LeaderSelectorListenerAdapter implements Closeable {
 
-    private volatile boolean isLeader = false;
+    @Getter
+    boolean isLeader = false;
 
-    public static  boolean isRuning = false;
+    @Getter
+    private boolean isRuning = false;
     @Autowired
     private LeaderSelector selector;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -32,6 +35,7 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
         selector = new LeaderSelector(client, "/leader", this);
         selector.autoRequeue();
         selector.start();
+        isRuning = true;
     }
 
 
@@ -44,14 +48,14 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
         executorService.submit(() -> {
             System.out.println("I'm leader, execute leader-only tasks.");
             if(!isRuning) {
-                isRuning = true;
+
                 myLeaderOnlyTask(); // Gọi công việc leader-only ở đây
-                isRuning = false;
+
 
             } else {
                 System.out.println("Job is runing...");
             }
-
+            isRuning = false;
             relinquishLeadership();
         });
     }
@@ -66,11 +70,20 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
 
     }
 
+    public String getInstanceLeader() {
+        try {
+            return selector.getLeader().getId();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     @Override
     public void close() {
         isLeader = false;
         leaderOnlyAspect.setLeader(false); // Cập nhật trạng thái leader trong Aspect khi đóng
         selector.close();
         executorService.shutdownNow();
+        isRuning = false;
     }
 }

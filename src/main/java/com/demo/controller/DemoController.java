@@ -30,7 +30,7 @@ public class DemoController {
 
     public String excute()  {
         jobCoutDown.start();
-        return jobCoutDown.isRuning ?  "Job is Running" : "Job start excute..";
+        return jobCoutDown.isRuning() ?  "Job is Running instance "+ jobCoutDown.getInstanceLeader() : "Job start excute..";
     }
 
 
