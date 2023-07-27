@@ -35,7 +35,7 @@ public class LeaderAspect extends LeaderSelectorListenerAdapter implements Close
         try {
             cf.wait();
         } catch (InterruptedException ex) {
-            // nothing to do
+            log.info("lỗi wait "+ex.getMessage());
         }
 
         revokeLeadership();
