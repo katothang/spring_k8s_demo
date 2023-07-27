@@ -32,9 +32,8 @@ public class LeaderAspect extends LeaderSelectorListenerAdapter implements Close
 
     public void takeLeadership(CuratorFramework cf) {
         isLeader = true;
-        log.info("Leadership granted.");
         try {
-            Thread.sleep(TENURE_MS);
+            cf.wait();
         } catch (InterruptedException ex) {
             // nothing to do
         }
@@ -44,7 +43,6 @@ public class LeaderAspect extends LeaderSelectorListenerAdapter implements Close
 
     private void revokeLeadership() {
         isLeader = false;
-        log.info("Leadership revoked.");
     }
 
     @Override
