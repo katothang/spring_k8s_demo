@@ -1,6 +1,7 @@
 package com.demo.controller;
 
 
+import com.demo.enums.TypeServeEnum;
 import com.demo.job.HelloWorld;
 import com.demo.job.JobCoutDown;
 import org.apache.zookeeper.WatchedEvent;
@@ -29,6 +30,7 @@ public class DemoController {
     @GetMapping("excute")
 
     public String excute()  {
+        jobCoutDown.setTypeServeEnum(TypeServeEnum.ETCH);
         jobCoutDown.start();
         return jobCoutDown.isRuning() ?  "Job is Running instance "+ jobCoutDown.getInstanceLeader() : "Job start excute..";
     }

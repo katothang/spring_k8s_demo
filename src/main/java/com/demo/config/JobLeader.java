@@ -1,11 +1,14 @@
 package com.demo.config;
 
 import com.demo.aspect.LeaderOnlyAspect;
+import com.demo.enums.TypeServeEnum;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
@@ -19,6 +22,10 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
     boolean isLeader = false;
 
     @Getter
+    @Setter
+    TypeServeEnum typeServeEnum;
+
+    @Getter
     private boolean isRuning = false;
     @Autowired
     private LeaderSelector selector;
@@ -28,14 +35,31 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
     private LeaderOnlyAspect leaderOnlyAspect;
 
     @Autowired
-    CuratorFramework client;
+    @Qualifier("curatorZookeeperFramework")
+    CuratorFramework clientZookeper;
+
+    @Autowired
+    @Qualifier("curatorEtchFramework")
+    CuratorFramework clientEtch;
 
 
     public void start() {
-        selector = new LeaderSelector(client, "/leader", this);
+        CuratorFramework curatorFramework = null;
+        switch (typeServeEnum) {
+            case ZOOKEEPER: curatorFramework = clientZookeper; break;
+            case ETCH: curatorFramework = clientEtch; break;
+            default: curatorFramework = clientZookeper; break;
+        }
+        selector = new LeaderSelector(curatorFramework, "/leader", this);
         selector.autoRequeue();
         selector.start();
-        isRuning = true;
+        try {
+            System.out.println(selector.getLeader().getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 
@@ -43,21 +67,15 @@ public class JobLeader extends LeaderSelectorListenerAdapter implements Closeabl
     public void takeLeadership(CuratorFramework cf) {
         isLeader = true;
         leaderOnlyAspect.setLeader(true); // Cập nhật trạng thái leader trong Aspect
-
-        // Thực thi công việc leader-only trong một luồng riêng biệt
-        executorService.submit(() -> {
-            System.out.println("I'm leader, execute leader-only tasks.");
-            if(!isRuning) {
-
-                myLeaderOnlyTask(); // Gọi công việc leader-only ở đây
-
-
-            } else {
-                System.out.println("Job is runing...");
-            }
-            isRuning = false;
-            relinquishLeadership();
-        });
+        myLeaderOnlyTask();
+        System.out.println("I'm leader, execute leader-only tasks.");
+        if(!isRuning) {
+            myLeaderOnlyTask(); // Gọi công việc leader-only ở đây
+        } else {
+            System.out.println("Job is runing...");
+        }
+        isRuning = false;
+        relinquishLeadership();
     }
 
     private void relinquishLeadership() {
