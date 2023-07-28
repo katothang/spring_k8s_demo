@@ -9,17 +9,19 @@ import io.etcd.jetcd.options.PutOption;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Component
 public class LeaderElection {
 
-    private static final String LEADER_KEY = "/your-app/leader";
+    String LEADER_KEY = "/your-app/leader";
 
     private final KV kv;
     private final Lease lease;
 
     public LeaderElection() {
+        LEADER_KEY = UUID.randomUUID().toString();
         // Kết nối đến etcd cluster
         Client client = Client.builder().endpoints("http://54.168.244.189:2379", "http://13.230.230.230:2379", "http://54.168.244.189:2379").build();
         this.kv = client.getKVClient();
