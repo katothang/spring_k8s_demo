@@ -7,12 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class HelloJob {
 
-    private final LeaderElection leaderElection;
-
     @Autowired
-    public HelloJob(LeaderElection leaderElection) {
-        this.leaderElection = leaderElection;
-    }
+    private LeaderElection leaderElection;
 
     @Scheduled(fixedRate = 5000)
     public void printHello() {

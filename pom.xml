@@ -93,10 +93,24 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-etcd</artifactId>
+		</dependency>
+
+
+		<dependency>
 			<groupId>io.etcd</groupId>
 			<artifactId>jetcd-core</artifactId>
 			<version>0.7.6</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-cluster-etcd -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-cluster-etcd</artifactId>
+			<version>1.0.0.RC2</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
