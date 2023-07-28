@@ -93,12 +93,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-etcd</artifactId>
-		</dependency>
-
-
-		<dependency>
 			<groupId>io.etcd</groupId>
 			<artifactId>jetcd-core</artifactId>
 			<version>0.7.6</version>
