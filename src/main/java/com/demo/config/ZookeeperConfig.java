@@ -26,6 +26,14 @@ public class ZookeeperConfig {
     public CuratorFramework curatorFramework() {
         CuratorFramework client = CuratorFrameworkFactory.newClient(zookeeperServer, new ExponentialBackoffRetry(1000, 3));
         client.start();
+        try {
+            if (client.checkExists().forPath("/locks/my_mutex_lock") == null) {
+                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath("/locks/my_mutex_lock");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return client;
     }
 
