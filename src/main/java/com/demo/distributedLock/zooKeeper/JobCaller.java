@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
+//import java.util.concurrent.TimeUnit;
 
 @RestController
 public class JobCaller {
@@ -18,25 +19,23 @@ public class JobCaller {
     @GetMapping("/call-job")
     public String callJob() {
         try {
-            // Giữ khóa trước khi thực hiện công việc
-            if (jobLockService.acquireLock(30, TimeUnit.SECONDS)) {
-                try {
-                    // Nếu giữ khóa thành công, thực hiện công việc
-                    System.out.println("Job called successfully.");
-                    Thread.sleep(10000);
-                    return "Job called successfully.";
-                } finally {
-                    // Giải phóng khóa sau khi hoàn thành công việc
-                    jobLockService.releaseLock();
-                }
-            } else {
-                // Nếu không giữ khóa được, không thực hiện công việc
-                System.out.println("Lock is not acquired, cannot process the job.");
-                return "Lock is not acquired, cannot process the job.";
+            //we acquire lock first
+            if(jobLockService.acquireLock()){
+                System.err.print("D1 is acquired the lock");
+                Date dt = new Date();
+                System.out.println(dt.toString());
+
+                Thread.sleep(10000);
+                jobLockService.releaseLock();
+                System.err.print("D1 is released the lock");
+                return(dt.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error occurred while processing the job.";
+        }finally {
+          //  jobLockService.close();
         }
+        return "Job does not excute by locked!";
     }
+
 }

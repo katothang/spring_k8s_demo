@@ -4,6 +4,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.apache.curator.framework.recipes.cache.NodeCacheListener;
+import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,13 @@ public class JobLockService {
     private static final String LOCK_PATH = "/locks/my_mutex_lock";
 
     private final CuratorFramework curatorFramework;
-    private final InterProcessMutex lock;
+    private final InterProcessSemaphoreMutex lock;
     private final NodeCache nodeCache;
 
     @Autowired
     public JobLockService(CuratorFramework curatorFramework) {
         this.curatorFramework = curatorFramework;
-        this.lock = new InterProcessMutex(curatorFramework, LOCK_PATH);
+        this.lock = new InterProcessSemaphoreMutex(curatorFramework, LOCK_PATH);
         this.nodeCache = new NodeCache(curatorFramework, LOCK_PATH);
         try {
             nodeCache.start();
@@ -41,9 +42,10 @@ public class JobLockService {
         }
     }
 
-    public boolean acquireLock(long timeout, TimeUnit unit) {
+    public boolean acquireLock() {
         try {
-            return lock.acquire(timeout, unit);
+            lock.acquire();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
