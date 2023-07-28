@@ -5,16 +5,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledJob {
 
-    private final DistributedLockManager lockManager;
+    private final LeaderService service;
 
-    public ScheduledJob(DistributedLockManager lockManager) {
-        this.lockManager = lockManager;
+
+    public ScheduledJob(LeaderService service) {
+        this.service = service;
     }
 
     @Scheduled(fixedRate = 5000)
     public void runJob() {
         try {
-            if (lockManager.isLeader()) {
+            if (service.isLeader()) {
                 System.out.println("Running the job!");
                 // Do the job here
             } else {
