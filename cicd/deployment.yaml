@@ -19,14 +19,14 @@ spec:
           image: hub.thangnotes.net/springk8s:latest
           ports:
             - containerPort: 1234
-          readinessProbe:
-            httpGet:
-              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sẵn sàng tại đây
-              port: 1234
-          livenessProbe:
-            httpGet:
-              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sống tại đây
-              port: 1234
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sẵn sàng tại đây
+#              port: 1234
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sống tại đây
+#              port: 1234
 
 ---
 apiVersion: v1
