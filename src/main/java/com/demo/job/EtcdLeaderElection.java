@@ -61,6 +61,11 @@ public class EtcdLeaderElection {
         }).start();
     }
 
+    public String getLeaderId() throws ExecutionException, InterruptedException {
+        KV kvClient = etcdClient.getKVClient();
+        GetResponse keyCheck = kvClient.get(keyLeaderModel.getKey()).get();
+        return keyCheck.getKvs().get(0).getValue().toString();
+    }
     public boolean isLeader() {
         return isLeader;
     }

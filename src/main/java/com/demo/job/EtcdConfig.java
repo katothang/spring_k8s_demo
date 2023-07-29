@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -18,7 +20,13 @@ public class EtcdConfig {
 
     @Bean
     public KeyLeaderModel getInstanceLeaderModel() {
-        String instanceId = UUID.randomUUID().toString();
+        String instanceId  = UUID.randomUUID().toString();
+        try {
+            instanceId = instanceId +"_"+ InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+           // TODO
+        }
+        ;
         ByteSequence key = ByteSequence.from("leader".getBytes(StandardCharsets.UTF_8));
         ByteSequence value = ByteSequence.from(instanceId.getBytes(StandardCharsets.UTF_8));
         return new KeyLeaderModel(key, value);

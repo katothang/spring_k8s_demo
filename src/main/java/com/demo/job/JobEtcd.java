@@ -16,10 +16,10 @@ public class JobEtcd {
         // Thực hiện công việc của bạn ở đây
         etcdLeaderElection.startLeaderElection();
         if(etcdLeaderElection.isLeader()) {
-            System.out.println("Leader ok");
+            System.out.println("Im a leader");
 
         } else {
-            System.out.println("worker ok");
+            System.out.println("Im currently a worker. The current leader is "+ etcdLeaderElection.getLeaderId());
         }
 
     }
