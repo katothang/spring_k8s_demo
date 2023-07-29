@@ -46,7 +46,7 @@ public class EtcdLeaderElection {
                     } else if (!isLeader) {
                         // Chưa phải leader và lease vẫn còn hiệu lực, tức là ứng dụng trở thành leader.
                         isLeader = true;
-                        System.out.println("I'm the leader! Instance ID: " + instanceId);
+                        System.out.println("I'm the leader! Instance ID: " + leaseId);
                     }
                     Thread.sleep(ttl * 1000 / 2);
                 } catch (Exception e) {
