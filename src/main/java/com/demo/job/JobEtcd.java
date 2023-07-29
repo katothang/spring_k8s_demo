@@ -17,6 +17,7 @@ public class JobEtcd {
         etcdLeaderElection.startLeaderElection();
         if(etcdLeaderElection.isLeader()) {
             System.out.println("Leader ok");
+
         } else {
             System.out.println("worker ok");
         }
