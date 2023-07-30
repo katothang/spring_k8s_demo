@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springk8s
+  name: spring-etcd
   annotations:
     kubectl.kubernetes.io/change-cause: "Automatic redeployment triggered by Jenkins" # Thêm annotation để ghi chú lý do triển khai
 spec:
   selector:
     matchLabels:
-      app: springk8s
+      app: spring-etcd
   replicas: 3
   template:
     metadata:
       labels:
-        app: springk8s
+        app: spring-etcd
     spec:
       containers:
-        - name: springk8s
-          image: hub.thangnotes.net/springk8s:latest
+        - name: spring-etcd
+          image: hub.thangnotes.net/spring-etcd:latest
           ports:
             - containerPort: 1234
 #          readinessProbe:
@@ -32,10 +32,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springk8s-loadbalancer
+  name: spring-etcd-loadbalancer
 spec:
   selector:
-    app: springk8s
+    app: spring-etcd
   type: LoadBalancer
   ports:
     - protocol: TCP

@@ -1,7 +1,0 @@
-FROM openjdk:11-jdk
-
-WORKDIR /app
-EXPOSE 1235
-COPY application-leader.properties /app/application.properties
-COPY app.jar /app/app.jar
-CMD ["java", "-jar", "/app/app.jar", "--spring.config.location=file:/app/application.properties"]
