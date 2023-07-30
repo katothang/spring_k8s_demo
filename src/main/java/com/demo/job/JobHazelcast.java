@@ -32,7 +32,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
                 }
             } finally {
                 // Giải phóng lock sau khi xử lý xong
-                leaderMap.unlock(instanceId);
+                //leaderMap.unlock(instanceId);
             }
         }
 
