@@ -41,7 +41,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
         if (isLeader) {
             System.out.println("I'm the leader!");
         } else {
-            System.out.println("I'm the member. The currently leader is "+ instanceId);
+            System.out.println("I'm the member. The currently leader is "+ leaderMap.get(LEADER_MAP_KEY));
         }
     }
 
