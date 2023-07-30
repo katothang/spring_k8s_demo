@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring-etcd
+  name: spring-hazelcast
   annotations:
     kubectl.kubernetes.io/change-cause: "Automatic redeployment triggered by Jenkins" # Thêm annotation để ghi chú lý do triển khai
 spec:
   selector:
     matchLabels:
-      app: spring-etcd
+      app: spring-hazelcast
   replicas: 3
   template:
     metadata:
       labels:
-        app: spring-etcd
+        app: spring-hazelcast
     spec:
       containers:
-        - name: spring-etcd
-          image: hub.thangnotes.net/spring-etcd:latest
+        - name: spring-hazelcast
+          image: hub.thangnotes.net/spring-hazelcast:latest
           ports:
             - containerPort: 1234
 #          readinessProbe:
@@ -32,10 +32,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-etcd-loadbalancer
+  name: spring-hazelcast-loadbalancer
 spec:
   selector:
-    app: spring-etcd
+    app: spring-hazelcast
   type: LoadBalancer
   ports:
     - protocol: TCP
