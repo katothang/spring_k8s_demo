@@ -18,22 +18,19 @@ public class JobHazelcast implements HazelcastInstanceAware {
 
     private static final String LEADER_MAP_KEY = "leader_hz1";
 
-    @Scheduled(fixedRate = 5000) // In ra 5 giây một lần
+    @Scheduled(fixedRate = 5000)
     public void printLeaderStatus() throws InterruptedException, UnknownHostException {
         IMap<String, String> leaderMap = hazelcastInstance.getMap(LEADER_MAP_KEY);
         String instanceId = InetAddress.getLocalHost().getHostAddress();
         boolean isLeader = false;
 
-        // Thử đặt lock cho instance hiện tại
         if (leaderMap.tryLock(instanceId, 30, TimeUnit.SECONDS)) {
             try {
-                // Kiểm tra xem instance hiện tại có phải là leader không
                 if (leaderMap.get(LEADER_MAP_KEY) == null || leaderMap.get(LEADER_MAP_KEY).equals(instanceId)) {
                     leaderMap.put(LEADER_MAP_KEY, instanceId,30, TimeUnit.SECONDS);
                     isLeader = true;
                 }
             } finally {
-                // Giải phóng lock sau khi xử lý xong
                 leaderMap.unlock(instanceId);
             }
         }
