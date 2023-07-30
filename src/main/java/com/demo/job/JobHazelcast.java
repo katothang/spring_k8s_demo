@@ -29,7 +29,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
             try {
                 // Kiểm tra xem instance hiện tại có phải là leader không
                 if (leaderMap.get(LEADER_MAP_KEY) == null || leaderMap.get(LEADER_MAP_KEY).equals(instanceId)) {
-                    leaderMap.tryPut(LEADER_MAP_KEY, instanceId,30, TimeUnit.SECONDS);
+                    leaderMap.put(LEADER_MAP_KEY, instanceId,30, TimeUnit.SECONDS);
                     isLeader = true;
                 }
             } finally {
