@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -14,12 +16,12 @@ public class JobHazelcast implements HazelcastInstanceAware {
     @Autowired
     private HazelcastInstance hazelcastInstance;
 
-    private static final String LEADER_MAP_KEY = "leader_hz";
+    private static final String LEADER_MAP_KEY = "leader_hz1";
 
     @Scheduled(fixedRate = 5000) // In ra 5 giây một lần
-    public void printLeaderStatus() throws InterruptedException {
+    public void printLeaderStatus() throws InterruptedException, UnknownHostException {
         IMap<String, String> leaderMap = hazelcastInstance.getMap(LEADER_MAP_KEY);
-        String instanceId = hazelcastInstance.getLocalEndpoint().getUuid().toString();
+        String instanceId = InetAddress.getLocalHost().getHostAddress();
         boolean isLeader = false;
 
         // Thử đặt lock cho instance hiện tại
@@ -27,7 +29,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
             try {
                 // Kiểm tra xem instance hiện tại có phải là leader không
                 if (leaderMap.get(LEADER_MAP_KEY) == null || leaderMap.get(LEADER_MAP_KEY).equals(instanceId)) {
-                    leaderMap.put(LEADER_MAP_KEY, instanceId);
+                    leaderMap.tryPut(LEADER_MAP_KEY, instanceId,30, TimeUnit.SECONDS);
                     isLeader = true;
                 }
             } finally {
@@ -39,7 +41,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
         if (isLeader) {
             System.out.println("I'm the leader!");
         } else {
-            System.out.println("I'm the member");
+            System.out.println("I'm the member. The currently leader is "+ instanceId);
         }
     }
 
