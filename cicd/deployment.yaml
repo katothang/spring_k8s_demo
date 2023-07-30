@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring_zk
+  name: spring-zk
   annotations:
     kubectl.kubernetes.io/change-cause: "Automatic redeployment triggered by Jenkins" # Thêm annotation để ghi chú lý do triển khai
 spec:
   selector:
     matchLabels:
-      app: spring_zk
+      app: spring-zk
   replicas: 3
   template:
     metadata:
       labels:
-        app: spring_zk
+        app: spring-zk
     spec:
       containers:
-        - name: springk8s
+        - name: spring-zk
           image: hub.thangnotes.net/spring_zk:latest
           ports:
             - containerPort: 1234
@@ -32,10 +32,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: springk8s-loadbalancer
+  name: spring-zk-loadbalancer
 spec:
   selector:
-    app: springk8s
+    app: spring-zk
   type: LoadBalancer
   ports:
     - protocol: TCP

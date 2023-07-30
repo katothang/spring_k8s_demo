@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: leader-election-config
-data:
-  leader-elect: "true"
-  lease-duration: "150s"
-  renew-deadline: "100s"
-  retry-period: "2s"
