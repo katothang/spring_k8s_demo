@@ -14,7 +14,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
     @Autowired
     private HazelcastInstance hazelcastInstance;
 
-    private static final String LEADER_MAP_KEY = "leader";
+    private static final String LEADER_MAP_KEY = "leader_hz";
 
     @Scheduled(fixedRate = 5000) // In ra 5 giây một lần
     public void printLeaderStatus() throws InterruptedException {
@@ -23,7 +23,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
         boolean isLeader = false;
 
         // Thử đặt lock cho instance hiện tại
-        if (leaderMap.tryLock(instanceId, 0, TimeUnit.SECONDS)) {
+        if (leaderMap.tryLock(instanceId, 30, TimeUnit.SECONDS)) {
             try {
                 // Kiểm tra xem instance hiện tại có phải là leader không
                 if (leaderMap.get(LEADER_MAP_KEY) == null || leaderMap.get(LEADER_MAP_KEY).equals(instanceId)) {
@@ -32,7 +32,7 @@ public class JobHazelcast implements HazelcastInstanceAware {
                 }
             } finally {
                 // Giải phóng lock sau khi xử lý xong
-                //leaderMap.unlock(instanceId);
+                leaderMap.unlock(instanceId);
             }
         }
 
