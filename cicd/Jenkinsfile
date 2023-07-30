@@ -19,9 +19,9 @@ pipeline {
         stage('Delete old docker') {
             steps {
                 script {
-                    def imageExists = sh script: "docker image inspect springk8s", returnStatus: true
+                    def imageExists = sh script: "docker image inspect spring_zk", returnStatus: true
                     if (imageExists == 0) {
-                        sh "docker rmi springk8s"
+                        sh "docker rmi spring_zk"
                     }
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
                     sh "ls"
                     sh "cp target/demo-0.0.1-SNAPSHOT.jar cicd/app.jar"
                     dir('cicd') {
-                        sh "docker build -t hub.thangnotes.net/springk8s ."
+                        sh "docker build -t hub.thangnotes.net/spring_zk ."
                     }
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
         stage('Push Docker repo local') {
             steps {
                 script {
-                    sh "docker push hub.thangnotes.net/springk8s"
+                    sh "docker push hub.thangnotes.net/spring_zk"
                 }
             }
         }

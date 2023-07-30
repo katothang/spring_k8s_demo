@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springk8s
+  name: spring_zk
   annotations:
     kubectl.kubernetes.io/change-cause: "Automatic redeployment triggered by Jenkins" # Thêm annotation để ghi chú lý do triển khai
 spec:
   selector:
     matchLabels:
-      app: springk8s
+      app: spring_zk
   replicas: 3
   template:
     metadata:
       labels:
-        app: springk8s
+        app: spring_zk
     spec:
       containers:
         - name: springk8s
-          image: hub.thangnotes.net/springk8s:latest
+          image: hub.thangnotes.net/spring_zk:latest
           ports:
             - containerPort: 1234
-          readinessProbe:
-            httpGet:
-              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sẵn sàng tại đây
-              port: 1234
-          livenessProbe:
-            httpGet:
-              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sống tại đây
-              port: 1234
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sẵn sàng tại đây
+#              port: 1234
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health # Điều chỉnh đường dẫn kiểm tra sự sống tại đây
+#              port: 1234
 
 ---
 apiVersion: v1
