@@ -34,7 +34,7 @@ pipeline {
                     sh "ls"
                     sh "cp target/demo-0.0.1-SNAPSHOT.jar cicd/app.jar"
                     dir('cicd') {
-                        sh "docker build -t hub.thangnotes.net/spring_zk ."
+                        sh "docker build -t hub.thangnotes.dev/spring_zk ."
                     }
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
         stage('Push Docker repo local') {
             steps {
                 script {
-                    sh "docker push hub.thangnotes.net/spring_zk"
+                    sh "docker push hub.thangnotes.dev/spring_zk"
                 }
             }
         }
