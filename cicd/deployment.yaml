@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: spring-zk
-          image: hub.thangnotes.net/spring_zk:latest
+          image: hub.thangnotes.dev/spring_zk:latest
           ports:
             - containerPort: 1234
 #          readinessProbe:
